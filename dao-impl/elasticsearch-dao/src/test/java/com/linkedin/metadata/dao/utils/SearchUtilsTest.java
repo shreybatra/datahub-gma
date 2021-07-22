@@ -7,6 +7,8 @@ import com.linkedin.metadata.query.Filter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.testng.annotations.Test;
 
 import static com.linkedin.metadata.dao.utils.SearchUtils.*;
@@ -36,5 +38,20 @@ public class SearchUtilsTest {
         new Criterion().setField("key").setValue("value").setCondition(Condition.CONTAIN)
     ));
     assertThrows(UnsupportedOperationException.class, () -> getRequestMap(filter3));
+  }
+
+  @Test
+  public void testGetQueryBuilderFromCriterion() {
+
+    // given a 'contain' criterion
+    Criterion containCriterion = new Criterion();
+    containCriterion.setValue("match text");
+    containCriterion.setCondition(Condition.CONTAIN);
+    containCriterion.setField("text");
+
+    // verify 'contain' criterion creates a MatchQueryBuilder
+    QueryBuilder queryBuilder = SearchUtils.getQueryBuilderFromCriterion(containCriterion);
+    assertNotNull(queryBuilder);
+    assertTrue(queryBuilder instanceof MatchQueryBuilder);
   }
 }
