@@ -145,7 +145,8 @@ public class ESBrowseDAO extends BaseBrowseDAO {
     }
 
     requestMap.forEach((field, val) -> {
-      if (_config.hasFieldInSchema(field)) {
+      String[] fieldParts = field.split("\\.");
+      if (_config.hasFieldInSchema(fieldParts[0])) {
         queryBuilder.filter(QueryBuilders.termQuery(field, val));
       }
     });
